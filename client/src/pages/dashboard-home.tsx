@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Plus, Terminal, TrendingUp, Calendar, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +15,7 @@ interface DashboardHomeProps {
 
 export default function DashboardHome({ searchQuery, onSearchChange }: DashboardHomeProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [, setLocation] = useLocation();
 
   // Fetch recent logs
   const { data: recentLogs = [], isLoading: isLoadingRecent } = useQuery<PromptLog[]>({
@@ -99,7 +101,11 @@ export default function DashboardHome({ searchQuery, onSearchChange }: Dashboard
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Recent Logs</CardTitle>
-          <Button variant="link" className="text-primary hover:text-primary/80 p-0">
+          <Button 
+            variant="link" 
+            className="text-primary hover:text-primary/80 p-0"
+            onClick={() => setLocation("/all-logs")}
+          >
             View all logs
           </Button>
         </CardHeader>
