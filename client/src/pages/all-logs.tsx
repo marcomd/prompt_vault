@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import LogCard from "@/components/log-card";
 import CreateLogModal from "@/components/create-log-modal";
+import { useAuth } from "@/hooks/useAuth";
 import type { PromptLog } from "@shared/schema";
 
 export default function AllLogs() {
@@ -14,6 +15,7 @@ export default function AllLogs() {
   const [editingLog, setEditingLog] = useState<PromptLog | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [filterValue, setFilterValue] = useState<string>("");
+  const { isAuthenticated } = useAuth();
 
   // Fetch all logs
   const { data: allLogs = [], isLoading } = useQuery<PromptLog[]>({
@@ -66,7 +68,11 @@ export default function AllLogs() {
           <h1 className="text-2xl font-bold text-slate-900">All Logs</h1>
           <p className="text-slate-600">Manage and filter all your prompt logs</p>
         </div>
-        <Button onClick={handleCreateNew} className="bg-primary hover:bg-primary/90">
+        <Button 
+          onClick={handleCreateNew} 
+          className="bg-primary hover:bg-primary/90"
+          disabled={!isAuthenticated}
+        >
           <Plus className="mr-2 h-4 w-4" />
           New Log
         </Button>
@@ -159,7 +165,10 @@ export default function AllLogs() {
             </div>
             <h3 className="text-lg font-medium text-slate-900 mb-2">No logs yet</h3>
             <p className="text-slate-500 mb-6">Create your first prompt log to get started</p>
-            <Button onClick={handleCreateNew}>
+            <Button 
+              onClick={handleCreateNew}
+              disabled={!isAuthenticated}
+            >
               <Plus className="mr-2 h-4 w-4" />
               Create New Log
             </Button>

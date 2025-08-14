@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function Settings() {
   const [userSettings, setUserSettings] = useState({
-    defaultAuthorEmail: "developer@company.com",
     defaultOrchestrator: "GitHub Copilot",
     defaultLlm: "Claude Sonnet 3.5",
     autoGenerateId: true,
@@ -77,15 +76,6 @@ export default function Settings() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="defaultAuthorEmail">Default Author Email</Label>
-              <Input
-                id="defaultAuthorEmail"
-                value={userSettings.defaultAuthorEmail}
-                onChange={(e) => setUserSettings({ ...userSettings, defaultAuthorEmail: e.target.value })}
-                placeholder="your.email@company.com"
-              />
-            </div>
             <div>
               <Label htmlFor="defaultOrchestrator">Default Orchestrator</Label>
               <Select

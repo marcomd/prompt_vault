@@ -43,7 +43,7 @@ export async function setupAuth(app: Express) {
         {
           clientID: process.env.GOOGLE_CLIENT_ID!,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-          callbackURL: "/api/auth/google/callback",
+          callbackURL: "/auth/google_oauth2/callback",
         },
         async (accessToken, refreshToken, profile, done) => {
           try {
@@ -90,29 +90,29 @@ export async function setupAuth(app: Express) {
       }
     );
 
+    // Alternative callback route format that some OAuth setups expect
+    app.get(
+      "/auth/google_oauth2/callback",
+      passport.authenticate("google", { failureRedirect: "/?error=auth_failed" }),
+      (req, res) => {
+        res.redirect("/");
+      }
+    );
+
     app.get("/api/auth/logout", (req, res) => {
       req.logout(() => {
         res.redirect("/");
       });
     });
   } else {
-    console.log("Google OAuth credentials not found. Running in development mode without authentication.");
+    console.log("Google OAuth credentials not found. Authentication disabled - users can only read data.");
     
-    // Development mode: create a mock user session
-    app.use((req: any, res, next) => {
-      req.user = {
-        id: "dev-user-1",
-        email: "developer@company.com",
-        firstName: "Developer",
-        lastName: "User",
-        profileImageUrl: null
-      };
-      next();
-    });
-
-    // Mock auth routes for development
+    // Mock auth routes for development (redirect to info page)
     app.get("/api/auth/google", (req, res) => {
-      res.redirect("/");
+      res.status(400).json({ 
+        error: "Google OAuth not configured",
+        message: "Please configure GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables"
+      });
     });
 
     app.get("/api/auth/logout", (req, res) => {
@@ -122,11 +122,20 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = (req: any, res, next) => {
-  // In development mode without Google OAuth, always allow access
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ message: "Unauthorized" });
+};
+
+// For read-only operations when authentication is not configured
+export const allowReadOnlyAccess: RequestHandler = (req: any, res, next) => {
+  // If Google OAuth is not configured, allow read operations
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
     return next();
   }
   
+  // If configured, require authentication
   if (req.isAuthenticated()) {
     return next();
   }

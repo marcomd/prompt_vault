@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertPromptLogSchema } from "@shared/schema";
-import { setupAuth, isAuthenticated } from "./auth";
+import { setupAuth, isAuthenticated, allowReadOnlyAccess } from "./auth";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -19,8 +19,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get all logs
-  app.get("/api/logs", isAuthenticated, async (req: any, res) => {
+  // Get all logs (read-only access allowed)
+  app.get("/api/logs", allowReadOnlyAccess, async (req: any, res) => {
     try {
       const userId = req.user?.id;
       const logs = await storage.getAllPromptLogs(userId);
@@ -30,8 +30,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get recent logs
-  app.get("/api/logs/recent", isAuthenticated, async (req: any, res) => {
+  // Get recent logs (read-only access allowed)
+  app.get("/api/logs/recent", allowReadOnlyAccess, async (req: any, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
       const userId = req.user?.id;
@@ -42,8 +42,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Search logs
-  app.get("/api/logs/search", isAuthenticated, async (req: any, res) => {
+  // Search logs (read-only access allowed)
+  app.get("/api/logs/search", allowReadOnlyAccess, async (req: any, res) => {
     try {
       const query = req.query.q as string;
       if (!query) {
@@ -58,8 +58,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get log by ID
-  app.get("/api/logs/:id", isAuthenticated, async (req: any, res) => {
+  // Get log by ID (read-only access allowed)
+  app.get("/api/logs/:id", allowReadOnlyAccess, async (req: any, res) => {
     try {
       const userId = req.user?.id;
       const log = await storage.getPromptLog(req.params.id, userId);
