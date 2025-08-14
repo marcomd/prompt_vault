@@ -36,7 +36,7 @@ export class MemStorage implements IStorage {
       log.authorEmail.toLowerCase().includes(searchTerm) ||
       log.orchestrator.toLowerCase().includes(searchTerm) ||
       log.llm.toLowerCase().includes(searchTerm) ||
-      log.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+      (log.tags && log.tags.some(tag => tag.toLowerCase().includes(searchTerm))) ||
       log.content.toLowerCase().includes(searchTerm)
     ).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
@@ -59,6 +59,7 @@ export class MemStorage implements IStorage {
     const log: PromptLog = {
       ...insertLog,
       id,
+      branch: insertLog.branch || null,
       tags: Array.isArray(insertLog.tags) ? insertLog.tags : [],
       createdAt: now,
       updatedAt: now,

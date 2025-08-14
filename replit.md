@@ -6,6 +6,18 @@ Iubrompt is a prompt logging application built with a full-stack TypeScript arch
 
 Preferred communication style: Simple, everyday language.
 
+# Recent Changes
+
+## Navigation Structure Update (2025-01-14)
+- Restructured sidebar navigation with four main sections:
+  1. **Dashboard**: Overview with stats, quick search, recent logs, and personalized recommendations
+  2. **Search**: Dedicated search functionality with real-time results
+  3. **All Logs**: Complete CRUD management with advanced filtering by ID, author email, PR URL, and tags  
+  4. **Settings**: User preferences, data management (export/import), and application configuration
+- Implemented proper routing with Wouter for seamless navigation
+- Added comprehensive filtering and search capabilities across all sections
+- Enhanced user experience with consistent design patterns and responsive layouts
+
 # System Architecture
 
 ## Frontend Architecture
