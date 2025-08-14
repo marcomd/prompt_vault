@@ -43,7 +43,7 @@ export async function setupAuth(app: Express) {
         {
           clientID: process.env.GOOGLE_CLIENT_ID!,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-          callbackURL: "/api/auth/google/callback",
+          callbackURL: "/auth/google_oauth2/callback",
         },
         async (accessToken, refreshToken, profile, done) => {
           try {
@@ -84,6 +84,15 @@ export async function setupAuth(app: Express) {
 
     app.get(
       "/api/auth/google/callback",
+      passport.authenticate("google", { failureRedirect: "/?error=auth_failed" }),
+      (req, res) => {
+        res.redirect("/");
+      }
+    );
+
+    // Alternative callback route format that some OAuth setups expect
+    app.get(
+      "/auth/google_oauth2/callback",
       passport.authenticate("google", { failureRedirect: "/?error=auth_failed" }),
       (req, res) => {
         res.redirect("/");
