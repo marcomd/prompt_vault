@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import type { PromptLog } from "@shared/schema";
 
@@ -16,6 +17,7 @@ interface LogCardProps {
 export default function LogCard({ log, onEdit }: LogCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
@@ -73,25 +75,29 @@ export default function LogCard({ log, onEdit }: LogCardProps) {
             >
               <Eye className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-slate-600 hover:text-slate-700"
-              onClick={() => onEdit(log)}
-              title="Edit Log"
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-red-600 hover:text-red-700"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              title="Delete Log"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            {isAuthenticated && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-slate-600 hover:text-slate-700"
+                onClick={() => onEdit(log)}
+                title="Edit Log"
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
+            )}
+            {isAuthenticated && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-red-600 hover:text-red-700"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                title="Delete Log"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
         

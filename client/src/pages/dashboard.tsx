@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Route, Switch, useLocation } from "wouter";
-import { Terminal, Home, Search, List, Settings, UserCircle } from "lucide-react";
+import { Terminal, Home, Search, List, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import UserAuth from "@/components/user-auth";
 import DashboardHome from "@/pages/dashboard-home";
 import SearchLogs from "@/pages/search-logs";
 import AllLogs from "@/pages/all-logs";
@@ -57,10 +58,7 @@ export default function Dashboard() {
         </nav>
         
         <div className="p-4 border-t border-slate-200">
-          <div className="flex items-center text-sm text-slate-500">
-            <UserCircle className="mr-2 h-4 w-4" />
-            <span>developer@company.com</span>
-          </div>
+          <UserAuth />
         </div>
       </div>
 

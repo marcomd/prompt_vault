@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SearchBar from "@/components/search-bar";
 import CreateLogModal from "@/components/create-log-modal";
+import { useAuth } from "@/hooks/useAuth";
 import type { PromptLog } from "@shared/schema";
 
 interface DashboardHomeProps {
@@ -16,6 +17,7 @@ interface DashboardHomeProps {
 export default function DashboardHome({ searchQuery, onSearchChange }: DashboardHomeProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [, setLocation] = useLocation();
+  const { isAuthenticated } = useAuth();
 
   // Fetch recent logs
   const { data: recentLogs = [], isLoading: isLoadingRecent } = useQuery<PromptLog[]>({
@@ -45,7 +47,11 @@ export default function DashboardHome({ searchQuery, onSearchChange }: Dashboard
           <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
           <p className="text-slate-600">Overview of your AI prompt logs and activity</p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)} className="bg-primary hover:bg-primary/90">
+        <Button 
+          onClick={() => setIsModalOpen(true)} 
+          className="bg-primary hover:bg-primary/90"
+          disabled={!isAuthenticated}
+        >
           <Plus className="mr-2 h-4 w-4" />
           New Log
         </Button>
@@ -148,7 +154,10 @@ export default function DashboardHome({ searchQuery, onSearchChange }: Dashboard
               <Terminal className="h-12 w-12 text-slate-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-slate-900 mb-2">No logs yet</h3>
               <p className="text-slate-500 mb-4">Create your first prompt log to get started</p>
-              <Button onClick={() => setIsModalOpen(true)}>
+              <Button 
+                onClick={() => setIsModalOpen(true)}
+                disabled={!isAuthenticated}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Create New Log
               </Button>
